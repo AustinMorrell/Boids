@@ -3,26 +3,17 @@ using System.Collections;
 
 public class Seak : MonoBehaviour {
 
-    [SerializeField]
-    GameObject Box;
+    public Vector3 m_Force;
+    public int m_Mass;
+    Vector3 m_Velocity;
 
-	void Start ()
+    void FixedUpdate()
     {
-	
-	}
-	
-	void Update ()
-    {
-        Lerp(Box.transform.position.x * Time.deltaTime,
-            Box.transform.position.y * Time.deltaTime,
-            Box.transform.position.z * Time.deltaTime);
-	}
+        m_Velocity = ((m_Force / m_Mass) * Time.deltaTime);
+    }
 
-    void Lerp(float a, float b, float c)
+    void LateUpdate()
     {
-        gameObject.transform.position = new Vector3(
-            transform.position.x + a, 
-            transform.position.y + b, 
-            transform.position.z + c);
+        transform.position += m_Velocity;
     }
 }
