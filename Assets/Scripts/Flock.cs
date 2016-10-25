@@ -16,13 +16,12 @@ public class Flock : MonoBehaviour {
 
     // ----------------------------------------------------------------------
 
-    static Seak[] DemBoids;
-
     [SerializeField]
     private GameObject SpherePre;
 
-    [SerializeField]
-    private int numbSpheres;
+    private static int numbSpheres = 25;
+
+    private Seak[] DemBoids = new Seak[numbSpheres];
     void Start()
     {
         for (int i = 0; i < numbSpheres; i++)
@@ -32,14 +31,14 @@ public class Flock : MonoBehaviour {
             Quaternion spawnRotation = Quaternion.identity;
             GameObject a = (GameObject)Instantiate(SpherePre, position, spawnRotation);
             a.GetComponent<Seak>().m_Velocity = Velo;
+            DemBoids[i] = a.GetComponent<Seak>();
         }
     }
 
     // --------------------------------------------
     void Update()
     {
-        DemBoids = FindObjectsOfType<Seak>();
-        Vector3 v1, v2, v3, v4, v5, v6;
+        Vector3 v1, v2, v3, v4, v5, v6, v7;
         foreach (Seak b in DemBoids)
         {
             v1 = Rule1(b);
@@ -49,6 +48,7 @@ public class Flock : MonoBehaviour {
             v5 = Rule5(b);
             v6 = Rule6(b);
             b.m_Velocity = b.m_Velocity + v1 + v2 + v3 + v4 + v5 + v6;
+
             b.transform.position = b.transform.position + b.m_Velocity.normalized;
         }
     }
@@ -116,6 +116,38 @@ public class Flock : MonoBehaviour {
     private Vector3 Rule6(Seak b)
     {
         Vector3 v = new Vector3(0, 0, 0);
+
+        // X
+        if (b.transform.position.x < Xmin)
+        {
+            v = new Vector3(10, Random.Range(-10, 10), Random.Range(-10, 10));
+        }
+        else if (b.transform.position.x > Xmax)
+        {
+            v = new Vector3(-10, Random.Range(-10, 10), Random.Range(-10, 10));
+        }
+
+        // Y
+        if (b.transform.position.y < Ymin)
+        {
+            v = new Vector3(Random.Range(-10, 10), 10, Random.Range(-10, 10));
+        }
+        else if (b.transform.position.y > Ymax)
+        {
+            v = new Vector3(Random.Range(-10, 10), -10, Random.Range(-10, 10));
+        }
+
+        // Z
+        if (b.transform.position.z < Zmin)
+        {
+            v = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 10);
+        }
+        else if (b.transform.position.z > Zmax)
+        {
+            v = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), -10);
+        }
+
+        // ------------------------------------------------------------------------
 
         // X
         if (b.transform.position.x < Xmin)
