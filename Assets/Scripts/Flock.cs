@@ -3,9 +3,20 @@ using System.Collections.Generic;
 
 public class Flock : MonoBehaviour {
 
-    static Seak[] DemBoids;
+    [Range(100, 1)]
+    public float cohesion = 5.0f;
+    [Range(1, 100)]
+    public float dispersion = 10.0f;
+    [Range(100, 1)]
+    public float alliment = 25.0f;
+    public Vector3 place = new Vector3(0, 0, 0);
+    public Vector3 wind = new Vector3(5, 5, 5);
+    [Range(1, 100)]
+    public int Xmin = 25, Xmax = 25, Ymin = 25, Ymax = 25, Zmin = 25, Zmax = 25;
 
-    // ---------------------------------------------
+    // ----------------------------------------------------------------------
+
+    static Seak[] DemBoids;
 
     [SerializeField]
     private GameObject SpherePre;
@@ -56,7 +67,7 @@ public class Flock : MonoBehaviour {
 
         pc /= (numbSpheres - 1);
 
-        return (pc - b.transform.position) / 5;
+        return (pc - b.transform.position) / cohesion;
     }
 
     private Vector3 Rule2(Seak b)
@@ -67,7 +78,7 @@ public class Flock : MonoBehaviour {
             if (DemBoids[i] != b)
             {
                 float Mag = Vector3.Distance(DemBoids[i].transform.position, b.transform.position);
-                if (Mathf.Abs(Mag) < 10)
+                if (Mathf.Abs(Mag) < dispersion)
                 {
                     c = c - (DemBoids[i].transform.position - b.transform.position);
                 }
@@ -89,26 +100,52 @@ public class Flock : MonoBehaviour {
         }
         pv /= (numbSpheres - 1);
 
-        return (pv - b.m_Velocity) / 25;
+        return (pv - b.m_Velocity) / alliment;
     }
 
     private Vector3 Rule4(Seak b)
     {
-        Vector3 place = new Vector3(0, 0, 0);
         return (place - b.transform.position) / 5;
     }
 
     private Vector3 Rule5(Seak b)
     {
-        Vector3 wind = new Vector3(5, 5, 5);
         return wind;
     }
 
     private Vector3 Rule6(Seak b)
     {
-        int Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
-        Vector3 v;
+        Vector3 v = new Vector3(0, 0, 0);
 
+        // X
+        if (b.transform.position.x < Xmin)
+        {
+            v.x = 10;
+        }
+        else if (b.transform.position.x > Xmax)
+        {
+            v.x = -10;
+        }
+
+        // Y
+        if (b.transform.position.y < Ymin)
+        {
+            v.y = 10;
+        }
+        else if (b.transform.position.y > Ymax)
+        {
+            v.y = -10;
+        }
+
+        // Z
+        if (b.transform.position.z < Zmin)
+        {
+            v.z = 10;
+        }
+        else if (b.transform.position.z > Zmax)
+        {
+            v.z = -10;
+        }
 
         return v;
     }
