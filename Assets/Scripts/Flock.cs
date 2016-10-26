@@ -9,10 +9,14 @@ public class Flock : MonoBehaviour {
     public float dispersion = 10.0f;
     [Range(100, 1)]
     public float alliment = 25.0f;
+    [Range(1, 5000)]
+    public float vlim = 1000;
     public Vector3 place = new Vector3(0, 0, 0);
     public Vector3 wind = new Vector3(5, 5, 5);
     [Range(1, 100)]
     public int Xmin = 25, Xmax = 25, Ymin = 25, Ymax = 25, Zmin = 25, Zmax = 25;
+    public float groundLevel = 0;
+    public bool perching;
 
     // ----------------------------------------------------------------------
 
@@ -33,6 +37,7 @@ public class Flock : MonoBehaviour {
             a.GetComponent<Seak>().m_Velocity = Velo;
             DemBoids[i] = a.GetComponent<Seak>();
         }
+        perching = false;
     }
 
     // --------------------------------------------
@@ -41,15 +46,24 @@ public class Flock : MonoBehaviour {
         Vector3 v1, v2, v3, v4, v5, v6, v7;
         foreach (Seak b in DemBoids)
         {
-            v1 = Rule1(b);
-            v2 = Rule2(b);
-            v3 = Rule3(b);
-            v4 = Rule4(b);
-            v5 = Rule5(b);
-            v6 = Rule6(b);
-            b.m_Velocity = b.m_Velocity + v1 + v2 + v3 + v4 + v5 + v6;
+            if (!perching)
+            {
+                v1 = Rule1(b);
+                v2 = Rule2(b);
+                v3 = Rule3(b);
+                v4 = Rule4(b);
+                v5 = Rule5(b);
+                v6 = Rule6(b);
+                Rule7(b);
+                b.m_Velocity = b.m_Velocity + v1 + v2 + v3 + v4 + v5 + v6;
 
-            b.transform.position = b.transform.position + b.m_Velocity.normalized;
+                b.transform.position = b.transform.position + b.m_Velocity.normalized;
+            }
+            else
+            {
+                b.m_Velocity = new Vector3(b.m_Velocity.x, groundLevel, b.m_Velocity.z);
+                b.transform.position = b.transform.position + b.m_Velocity.normalized;
+            }
         }
     }
 
@@ -180,5 +194,15 @@ public class Flock : MonoBehaviour {
         }
 
         return v;
+    }
+
+    private void Rule7(Seak b)
+    {
+        if (Mathf.Abs(b.m_Velocity.x) > vlim || 
+            Mathf.Abs(b.m_Velocity.y) > vlim || 
+            Mathf.Abs(b.m_Velocity.z) > vlim)
+        {
+            b.m_Velocity = Vector3.ClampMagnitude(b.m_Velocity, vlim);
+        }
     }
 }
