@@ -1,36 +1,25 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public class GeneralManager : MonoBehaviour {
 
-    private float coh = 5.0f;
-    private float dis = 10.0f;
-    private float all = 25.0f;
+    [SerializeField]
+    private Slider c;
+    [SerializeField]
+    private Slider d;
+    [SerializeField]
+    private Slider z;
 
-        // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         foreach (Flock a in FindObjectsOfType<Flock>())
         {
-            a.cohesion = coh;
-            a.dispersion = dis;
-            a.alliment = all;
+            a.cohesion = c.value;
+            a.dispersion = d.value;
+            a.alliment = z.value;
         }
-    }
-
-    public void setCoh(float d)
-    {
-        coh = d;
-    }
-
-    public void setDis(float d)
-    {
-        dis = d;
-    }
-
-    public void setAll(float d)
-    {
-        all = d;
     }
 }
