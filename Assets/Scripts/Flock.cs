@@ -53,9 +53,9 @@ public class Flock : MonoBehaviour {
                 v3 = Rule3(b);
                 v4 = Rule4(b);
                 v5 = Rule5(b);
-                v6 = Rule6(b);
+                //v6 = Rule6(b);
                 Rule7(b);
-                b.m_Velocity = b.m_Velocity + v1 + v2 + v3 + v4 + v5 + v6;
+                b.m_Velocity = b.m_Velocity + v1 + v2 + v3 + v4 + v5/* + v6*/;
 
                 b.transform.position = b.transform.position + b.m_Velocity.normalized;
             }
